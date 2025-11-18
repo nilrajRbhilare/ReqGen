@@ -1,6 +1,5 @@
 import { type User, type InsertUser, type Document, type InsertDocument, type Settings, type InsertSettings, type Notification, type InsertNotification, type UserNotification, type InsertUserNotification } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { MySQLStorage } from "./mysql-storage";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 
@@ -355,16 +354,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Choose storage based on environment variable
-// Set USE_MYSQL=true in .env file to use MySQL with XAMPP
-// Set USE_MYSQL=false (or leave empty) to use in-memory storage
-const USE_MYSQL = process.env.USE_MYSQL === 'true';
+// Initialize in-memory storage with file persistence
+export const storage: IStorage = new MemStorage();
 
-export const storage: IStorage = USE_MYSQL 
-  ? new MySQLStorage() 
-  : new MemStorage();
-
-console.log(`📦 Storage initialized: ${USE_MYSQL ? 'MySQL Database' : 'In-Memory (Temporary)'}`);
-if (!USE_MYSQL) {
-  console.log(`✅ Default demo users created (analyst, admin, client)`);
-}
+console.log(`📦 Storage initialized: In-Memory (Temporary) with file persistence`);
+console.log(`✅ Default demo users created (analyst, admin, client)`);
